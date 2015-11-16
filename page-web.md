@@ -86,23 +86,28 @@ définit encore une contraction dont <math>V^*</math> est un point fixe.
 La fonction de valeurs optimale peut donc à nouveau s'approcher par un processus itératif à convergence exponentielle.
 
 #### Algorithmes de détermination de la politique optimale.
-La méthode itérative que nous venons de voir pour les équations d'optimalité de Bellman fournit un premier algorithme, appelé *itération de la valeur* (value-iteration) permettant de déterminer <math>\pi^*</math>.
+
+##### Itération sur la valeur (VI)
+La méthode itérative que nous venons de voir pour les équations d'optimalité de Bellman fournit un premier algorithme, appelé *itération sur la valeur* (VI: Value-Iteration) permettant de déterminer <math>\pi^*</math>.
 Il suffit en effet de déterminer <math>V^*</math> avec une précision donnée, et on peut en déduire la politique optimale par:
 :<math>\pi(s) 
 = \argmax_{a\in A} Q^*(s,a)  
 = \argmax_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^*(s')]T(s,a,s').</math>
 Une difficulté dans cet algorithme est de déterminer la précision avec laquelle calculer <math>V^*</math> de manière à être sûr d'en déduire effectivement la politique optimale.
 
-Un autre algorithme, appelé *itération de la politique* (policy-iteration) essaye d'obtenir la politique optimale sans nécessairement calculer "jusqu'au bout" les valeurs de <math>V^*</math>.
+##### Itération sur la politique (PI)
+Un autre algorithme, appelé *itération de la politique* (PI: Policy-Iteration) essaye d'obtenir la politique optimale sans nécessairement calculer "jusqu'au bout" les valeurs de <math>V^*</math>.
 L'idée est de partir d'une politique quelconque <math>\pi_0</math>, puis d'alterner une phase d'évaluation, dans laquelle la fonction <math>V^{\pi_n}</math> est déterminée (avec une des techniques vues plus haut), avec une phase d'amélioriation, où l'on définit la politique suivante <math>\pi_{n+1}</math> par:
 :<math>\pi_{n+1}(s) = \argmax_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^{\pi_n}(s')]T(s,a,s').</math>.
 Cet algorithme prend fin lorsqu'aucune évolution de la politique n'est observée, ie, lorsque <math>\pi_{n+1}(s)=\pi_n(s)</math> pour tout <math>s</math>.
 
 Si dans l'algorithme précédent l'on utilise une méthode itérative pour évaluer <math>V^\pi</math>, alors se pose la question de savoir à quelle précision s'arrêter.
 Ce problème n'en est en réalité pas un, car on peut montrer que même si l'on tronque l'évaluation de <math>V^\pi</math>, l'algorithme converge tout de même vers l'optimal.
-À l'extrême, c'est-à-dire lorsqu'une seule itération est utilisée pour évaluer <math>V^\pi</math>, et après avoir réuni en une seule itération la phase d'amélioration et la phase d'évaluation, on retombe sur l'algorithme d'itération de la valeur.
+À l'extrême, c'est-à-dire lorsqu'une seule itération est utilisée pour évaluer <math>V^\pi</math>, et après avoir réuni en une seule itération la phase d'amélioration et la phase d'évaluation, on retombe sur l'algorithme VI.
 
-TODO: faut-il ici présenter des algos en ligne qui traite du cas où le MDP n'est pas connu ? ou alors ce qui vient d'être dit est suffisant pour notre section sur les algos batch ?
+L'algorithme PI peut également se formuler dans les termes de la fonction d'états-actions $Q$ plutôt que $V$.
+On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant toutes autour d'un même principe général qui est schématisé à la figure ci-contre.
+[[Image:IMG/policy-iteration.svg|alt=policy-iteration|Schéma général des algorithmes d'itération sur la politique]]
 
 # Exemples (lucas)
 % présenter la modélisation sur deux trois exemples:
@@ -120,6 +125,45 @@ TODO: faut-il ici présenter des algos en ligne qui traite du cas où le MDP n'e
 % si possible: pointer au max notre classification
 ###kernel based (leo)
 ###fitted Q iteration (lucas)
-###least-squares policy iteration (alex)
-###monte-carlo ??
 
+###Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) 
+####Description de l'algorithme
+Cet algorithme est une adaptation de l'algorithme d'itération de la politique exprimé sur la fonction $Q$ d'états-actions.
+Il se focalise exclusivement sur l'évaluation de $Q$, et la politique n'y est jamais représentée explicitement, mais simplement déduite à la volée, par le choix glouton classique:
+:<math>\pi(s)=\argmax_{a\in A}Q(s,a)</math>
+
+Par rapport à PI, LSPI opère deux grandes généralisations:
+1. la fonction $Q$ est exprimée comme une combinaison linéaire de fonctions $\phi_i$, $i=1,\dots,k$:
+$$Q(s,a) = \sum_{i=1}^k w_i\phi_i(s,a).$$
+Les fonctions $\phi_i$ forment donc une base d'un sous-espace {\cal Q} de l'espace des fonctions états-actions, choisie une fois pour toutes au départ.
+Ainsi en interne, la fonction $Q$ est simplement représentée par les $k$ coefficients $w_i$.
+
+Ce modèle possède un avantage: quels que soient le nombre d'états et d'actions, seuls $k$ coefficients sont utilisés pour représenter l'ensemble des valeurs de $Q$, contre $|S|\times |A|$ si l'on utilisait une représentation tabulaire classique.
+Ceci permet de traiter efficacement des MDP possédant un grand nombre d'états et/ou d'actions.
+On peut même, dans ce formalisme, considérer des espaces d'états ou d'actions continus.
+
+L'inconvénient, en revanche, est que l'on est maintenant restreint aux fonctions de $\cal Q$.
+Dans l'algorithme PI avec états-valeurs, la phase d'évaluation de la politique $\pi$ consiste à déterminer le point fixe $Q^\pi$ de l'opérateur
+:<math> K(Q)(s, a) = \sum_{s'\in S} [R(s,a,s') + \gamma Q(s', \pi(s'))]T(s,a,s'),</math>
+soit par la résolution d'un système linéaire, soit par calcul itératif sur $K$.
+
+Or même si par définition $Q\in {\cal Q}$, on n'a pas en général $K(Q)\in{\cal Q}$. 
+L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour $K(Q)$ sur $\cal Q$:
+:<math>K'(Q) = {\cal P}^\perp_{\cal Q}(K(Q),</math>
+et donc d'obtenir une approximation $\hat Q^\pi$ de $Q^\pi$ qui est stable par la règle de mise à jour suivie de la projection.
+Dans [ref], ce point fixe est obtenu par résolution d'un système linéaire.
+
+2. La deuxième différence est que LSPI ne suppose pas le MDP connu; l'algorithme se base uniquement sur un jeu d'échantillons du MDP, donnés sous la forme de quadruplets $(s,a,r,s')$.
+Ces échantillons peuvent être donnés directement au départ de l'algorithme (pure batch) ou progressivement (semi-batch ou en-ligne).
+Concrètement, l'algorithme se contente d'effectuer les mises à jour précédentes sur le jeu d'échantillon.
+On peut montrer qu'en fait cela revient à appliquer la mise à jour sur le véritable MDP, mais avec les probabilités de transitions $T(s,a,s')$ obtenues empiriquement selon la distribution des échantillons. 
+Ainsi dans l'hypothèse où cette distribution est conforme aux véritables probabilités de transition, le résultat converge asymptotiquement vers la véritable valeur $Q^\pi$, et donc finalement vers la fonction optimale $Q^*$.
+On peut également remarquer que chaque échantillon contribue linéairement à chaque itération (il ajoute un terme dans la somme définissant $K$ et l'opérateur de projection est linéaire), ce qui permet de mettre en place des optimisations lorsque les échantillons arrivent progressivement.
+
+La figure ci-contre résume schématiquement l'algorithme LSPI.
+[[Image:IMG/LS-policy-iteration.svg|alt=least-squares policy-iteration|L'algorithme d'itération moindres carrés sur la politique]]
+
+####Applications
+TODO: parler des applications de l'article, en trouver d'autres.
+
+###monte-carlo ??
