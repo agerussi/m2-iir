@@ -104,7 +104,7 @@ Si dans l'algorithme précédent l'on utilise une méthode itérative pour éval
 Ce problème n'en est en réalité pas un, car on peut montrer que même si l'on tronque l'évaluation de <math>V^\pi</math>, l'algorithme converge tout de même vers l'optimal.
 À l'extrême, c'est-à-dire lorsqu'une seule itération est utilisée pour évaluer <math>V^\pi</math>, et après avoir réuni en une seule itération la phase d'amélioration et la phase d'évaluation, on retombe sur l'algorithme VI.
 
-L'algorithme PI peut également se formuler dans les termes de la fonction d'états-actions $Q$ plutôt que $V$.
+L'algorithme PI peut également se formuler dans les termes de la fonction d'états-actions <math>Q</math> plutôt que <math>V</math>.
 On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant toutes autour d'un même principe général qui est schématisé à la figure ci-contre.
 [[Image:IMG/policy-iteration.svg|alt=policy-iteration|Schéma général des algorithmes d'itération sur la politique]]
 
@@ -127,38 +127,38 @@ On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant 
 
 ==== Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) ====
 ===== Description de l'algorithme =====
-Cet algorithme est une adaptation de l'algorithme d'itération de la politique exprimé sur la fonction $Q$ d'états-actions.
-Il se focalise exclusivement sur l'évaluation de $Q$, et la politique n'y est jamais représentée explicitement, mais simplement déduite à la volée, par le choix glouton classique:
+Cet algorithme est une adaptation de l'algorithme d'itération de la politique exprimé sur la fonction <math>Q</math> d'états-actions.
+Il se focalise exclusivement sur l'évaluation de <math>Q</math>, et la politique n'y est jamais représentée explicitement, mais simplement déduite à la volée, par le choix glouton classique:
 :<math>\pi(s)=\arg\max_{a\in A}Q(s,a)</math>
 
 Par rapport à PI, LSPI opère deux grandes généralisations:
 
-1. la fonction $Q$ est exprimée comme une combinaison linéaire de fonctions $\phi_i$, $i=1,\dots,k$:
-$$Q(s,a) = \sum_{i=1}^k w_i\phi_i(s,a).$$
-Les fonctions $\phi_i$ forment donc une base d'un sous-espace \mathcal{Q} de l'espace des fonctions états-actions, choisie une fois pour toutes au départ.
-Ainsi en interne, la fonction $Q$ est simplement représentée par les $k$ coefficients $w_i$.
+1. la fonction <math>Q</math> est exprimée comme une combinaison linéaire de fonctions <math>\phi_i</math>, <math>i=1,\dots,k</math>:
+:<math>Q(s,a) = \sum_{i=1}^k w_i\phi_i(s,a).</math>
+Les fonctions <math>\phi_i</math> forment donc une base d'un sous-espace \mathcal{Q} de l'espace des fonctions états-actions, choisie une fois pour toutes au départ.
+Ainsi en interne, la fonction <math>Q</math> est simplement représentée par les <math>k</math> coefficients <math>w_i</math>.
 
-Ce modèle possède un avantage: quels que soient le nombre d'états et d'actions, seuls $k$ coefficients sont utilisés pour représenter l'ensemble des valeurs de $Q$, contre $|S|\times |A|$ si l'on utilisait une représentation tabulaire classique.
+Ce modèle possède un avantage: quels que soient le nombre d'états et d'actions, seuls <math>k</math> coefficients sont utilisés pour représenter l'ensemble des valeurs de <math>Q</math>, contre <math>|S|\times |A|</math> si l'on utilisait une représentation tabulaire classique.
 Ceci permet de traiter efficacement des MDP possédant un grand nombre d'états et/ou d'actions.
 On peut même, dans ce formalisme, considérer des espaces d'états ou d'actions continus.
 
-L'inconvénient, en revanche, est que l'on est maintenant restreint aux fonctions de $\mathcal{Q}$.
-Dans l'algorithme PI avec états-valeurs, la phase d'évaluation de la politique $\pi$ consiste à déterminer le point fixe $Q^\pi$ de l'opérateur
+L'inconvénient, en revanche, est que l'on est maintenant restreint aux fonctions de <math>\mathcal{Q}</math>.
+Dans l'algorithme PI avec états-valeurs, la phase d'évaluation de la politique <math>\pi</math> consiste à déterminer le point fixe <math>Q^\pi</math> de l'opérateur
 :<math> K(Q)(s, a) = \sum_{s'\in S} [R(s,a,s') + \gamma Q(s', \pi(s'))]T(s,a,s'),</math>
-soit par la résolution d'un système linéaire, soit par calcul itératif sur $K$.
+soit par la résolution d'un système linéaire, soit par calcul itératif sur <math>K</math>.
 
-Or même si par définition $Q\in \mathcal{Q}$, on n'a pas en général $K(Q)\in\mathcal{Q}$. 
-L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour $K(Q)$ sur $\cal Q$:
+Or même si par définition <math>Q\in \mathcal{Q}</math>, on n'a pas en général <math>K(Q)\in\mathcal{Q}</math>. 
+L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour <math>K(Q)</math> sur <math>\cal Q</math>:
 :<math>K'(Q) = \mathcal{P}^\perp_\mathcal{Q}(K(Q)),</math>
-et donc d'obtenir une approximation $\hat Q^\pi$ de $Q^\pi$ qui est stable par la règle de mise à jour suivie de la projection.
+et donc d'obtenir une approximation <math>\hat Q^\pi</math> de <math>Q^\pi</math> qui est stable par la règle de mise à jour suivie de la projection.
 Dans [ref], ce point fixe est obtenu par résolution d'un système linéaire.
 
-2. La deuxième différence est que LSPI ne suppose pas le MDP connu; l'algorithme se base uniquement sur un jeu d'échantillons du MDP, donnés sous la forme de quadruplets $(s,a,r,s')$.
+2. La deuxième différence est que LSPI ne suppose pas le MDP connu; l'algorithme se base uniquement sur un jeu d'échantillons du MDP, donnés sous la forme de quadruplets <math>(s,a,r,s')</math>.
 Ces échantillons peuvent être donnés directement au départ de l'algorithme (pure batch) ou progressivement (semi-batch ou en-ligne).
 Concrètement, l'algorithme se contente d'effectuer les mises à jour précédentes sur le jeu d'échantillon.
-On peut montrer qu'en fait cela revient à appliquer la mise à jour sur le véritable MDP, mais avec les probabilités de transitions $T(s,a,s')$ obtenues empiriquement selon la distribution des échantillons. 
-Ainsi dans l'hypothèse où cette distribution est conforme aux véritables probabilités de transition, le résultat converge asymptotiquement vers la véritable valeur $Q^\pi$, et donc finalement vers la fonction optimale $Q^*$.
-On peut également remarquer que chaque échantillon contribue linéairement à chaque itération (il ajoute un terme dans la somme définissant $K$ et l'opérateur de projection est linéaire), ce qui permet de mettre en place des optimisations lorsque les échantillons arrivent progressivement.
+On peut montrer qu'en fait cela revient à appliquer la mise à jour sur le véritable MDP, mais avec les probabilités de transitions <math>T(s,a,s')</math> obtenues empiriquement selon la distribution des échantillons. 
+Ainsi dans l'hypothèse où cette distribution est conforme aux véritables probabilités de transition, le résultat converge asymptotiquement vers la véritable valeur <math>Q^\pi</math>, et donc finalement vers la fonction optimale <math>Q^*</math>.
+On peut également remarquer que chaque échantillon contribue linéairement à chaque itération (il ajoute un terme dans la somme définissant <math>K</math> et l'opérateur de projection est linéaire), ce qui permet de mettre en place des optimisations lorsque les échantillons arrivent progressivement.
 
 La figure ci-contre résume schématiquement l'algorithme LSPI.
 [[Image:IMG/LS-policy-iteration.svg|alt=least-squares policy-iteration|L'algorithme d'itération moindres carrés sur la politique]]
