@@ -1,6 +1,6 @@
 % la page web au format texte+formules en syntaxe latex
 
-# Introduction (lucas)
+== Introduction (lucas) ==
 % qu'est-ce que RL ?
 % distinction on-line/off-line
 % distinction model-based / model-free
@@ -8,34 +8,33 @@
 % définir le pure-online, et donc le batch par opposition
 % exemples où le batch est nécessaire
 
-# Classification des batchs (leo)
+== Classification des batchs (leo) ==
 % selon interaction ou pas (IE), la quantité d'expérience utilisée (QE)
 % IE=non QE=tout "pure batch"
 % IE=oui QE=tout growing batch
 % IE=oui QE=partielle semi-batch
 
-# Le modèle général (alexandre)
+== Le modèle général (alexandre) ==
 TODO: mettre les liens wiki et références biblio
 
-## Processus de décision de Markov
-Les *processus de décision de Markov* (Markov Decision Processes (MDP) en anglais) forment le modèle sous-jacent à tout algorithme d'apprentissage par renforcement, qu'il soit en ligne ou hors ligne.
+=== Processus de décision de Markov ===
+Les ''processus de décision de Markov'' (Markov Decision Processes (MDP) en anglais) forment le modèle sous-jacent à tout algorithme d'apprentissage par renforcement, qu'il soit en ligne ou hors ligne.
 
 Dans ce modèle, l'environnement d'apprentissage est modélisé par:
-* un *ensemble d'états* <math>S</math>, qui peut être fini, dénombrable ou continu; cet ensemble définit l'environnement tel que perçu par l'apprenant (dans le cas d'un robot, on peut voir cela comme l'ensemble produit des valeurs de ses différents capteurs);
-* un *ensemble d'actions* <math>A</math>, qui peut être fini, dénombre ou continu et dans lequel l'apprenant choisi les interactions qu'il effectue avec l'environnement (dans le cas d'un robot on peut voir cela comme l'ensemble produit des paramètres de ses différentes commandes);
-* une *fonction de transition* <math>T:S\times A\times S\to[0;1]</math>; cette fonction définit l'effet des actions de l'apprenant sur l'environnement: <math>T(s, a, s')</math> représente la probabilité de se retrouver sans l'état <math>s'</math> en effectuant l'action <math>a</math>, sachant que l'on était l'instant d'avant dans l'état <math>s</math>.
+* un ''ensemble d'états'' <math>S</math>, qui peut être fini, dénombrable ou continu; cet ensemble définit l'environnement tel que perçu par l'apprenant (dans le cas d'un robot, on peut voir cela comme l'ensemble produit des valeurs de ses différents capteurs);
+* un ''ensemble d'actions'' <math>A</math>, qui peut être fini, dénombrable ou continu et dans lequel l'apprenant choisit les interactions qu'il effectue avec l'environnement (dans le cas d'un robot on peut voir cela comme l'ensemble produit des paramètres de ses différentes commandes);
+* une ''fonction de transition'' <math>T:S\times A\times S\to[0;1]</math>; cette fonction définit l'effet des actions de l'apprenant sur l'environnement: <math>T(s, a, s')</math> représente la probabilité de se retrouver sans l'état <math>s'</math> en effectuant l'action <math>a</math>, sachant que l'on était l'instant d'avant dans l'état <math>s</math>.
 <math>T</math> ainsi définie représente le cas le plus général; dans un environnement déterministe, on aura plutôt <math>T:S\times A\to S</math>.
-* une *fonction de récompense* <math>R:S\times A\times S\times\RR\to[0;1]</math>; elle définit la récompense (positive ou négative) reçue par l'agent: <math>R(s,a,s',v)</math> est la probabilité d'obtenir une récompense <math>v</math> pour être passé de l'état <math>s</math> à <math>s'</math> en ayant effectué l'action <math>a</math>.
-Ici encore cette définition est très générale, bien souvent on se contentera par exemple des cas particuliers suivants:
-..* <math>R:S\times A\times S\to\RR</math> (récompense déterministe, c'est le choix que nous adopterons dans la suite);
-..* <math>R:S\times A\to\RR</math> (récompense déterministe rattachée à l'action en ignorant son résultat);
-..* <math>R:S\to\RR</math> (récompense déterministe rattachée à un état donné).
+* une ''fonction de récompense'' <math>R:S\times A\times S\times\R\to[0;1]</math>; elle définit la récompense (positive ou négative) reçue par l'agent: <math>R(s,a,s',v)</math> est la probabilité d'obtenir une récompense <math>v</math> pour être passé de l'état <math>s</math> à <math>s'</math> en ayant effectué l'action <math>a</math>. Ici encore cette définition est très générale, bien souvent on se contentera par exemple des cas particuliers suivants:
+** <math>R:S\times A\times S\to\R</math> (récompense déterministe, c'est le choix que nous adopterons dans la suite);
+** <math>R:S\times A\to\R</math> (récompense déterministe rattachée à l'action en ignorant son résultat);
+** <math>R:S\to\R</math> (récompense déterministe rattachée à un état donné).
  
-NB: nous ne considérons ici que les modèles dans lesquels le temps est discrétisé, c'est-à-dire que la «trajectoire» d'un apprenant dans l'environnement est décrivable par *une suite* d'états <math>s_t</math> (<math>t\in\NN</math>), et non par *une fonction* <math>s(t)</math> avec <math>t\in\RR</math>.
+NB: nous ne considérons ici que les modèles dans lesquels le temps est discrétisé, c'est-à-dire que la «trajectoire» d'un apprenant dans l'environnement est décrivable par ''une suite'' d'états <math>s_t</math> (<math>t\in\N</math>), et non par ''une fonction'' <math>s(t)</math> avec <math>t\in\R</math>.
 De même on notera <math>a_t</math> la suite des actions prises par l'agent.
 On pourra consulter [ref]() pour une description des MDP à temps continu.
 
-## Politiques, fonctions de valeur et équations de Bellman
+=== Politiques, fonctions de valeur et équations de Bellman ===
 La politique d'un agent est la manière avec laquelle il choisit l'action qu'il va effectuer lorsqu'il se trouve dans un état donné.
 Formellement il s'agit donc d'une fonction <math>\pi: S\to A</math> dans le cas d'une politique déterministe (ce que nous supposerons dans la suite), ou <math>\pi:S\times A\to[0;1]</math> dans le cas stochastique: on a donc <math>a_t=\pi(s_t)</math>.
 Il est possible de généraliser la notion de politique en la faisant dépendre non uniquement de l'état présent, mais de l'ensemble de la trajectoire passée de l'agent dans l'environnement, et donc en particulier du temps qui passe [ref à trouver]().
@@ -53,15 +52,15 @@ Quand <math>\gamma=0</math> nous sommes face à un agent «pessimiste» qui ne c
 À l'opposé si <math>\gamma\to 1</math>, l'agent est «optimiste» puisqu'il tient de plus en plus sérieusement compte du futur lointain.
 
 Lorsqu'une politique et un critère sont déterminés, deux fonctions peuvent être définies:
-* <math>V^\pi: S\to\RR</math>: c'est la fonction de valeur des états; <math>V\pi(s)</math> représente le gain (selon le critère adopté) engrengé par l'agent s'il démarre à l'état <math>s</math> et applique ensuite la politique <math>\pi</math> ad infinitum.
-* <math>Q^\pi: S\times A\to\RR</math>: c'est la fonction de valeur des états-actions; <math>Q^\pi(s,a)</math> représente le gain engrengé par l'agent s'il démarre à l'état <math>s</math> et commence par effectuer l'action <math>a</math>, avant d'appliquer ensuite la politique <math>\pi</math> ad infinitum.
+* <math>V^\pi: S\to\R</math>: c'est la fonction de valeur des états; <math>V\pi(s)</math> représente le gain (selon le critère adopté) engrengé par l'agent s'il démarre à l'état <math>s</math> et applique ensuite la politique <math>\pi</math> ad infinitum.
+* <math>Q^\pi: S\times A\to\R</math>: c'est la fonction de valeur des états-actions; <math>Q^\pi(s,a)</math> représente le gain engrengé par l'agent s'il démarre à l'état <math>s</math> et commence par effectuer l'action <math>a</math>, avant d'appliquer ensuite la politique <math>\pi</math> ad infinitum.
 Les deux fonctions sont intimement liées. 
 On a toujours <math>V^\pi(s) = Q^\pi(s, \pi(s))</math> et, dans le cas du gain amorti à horizon infini:
-:<math> Q^pi(s, a) &= \sum_{s'\in S} [R(s,a,s') + \gamma V^\pi(s')]T(s,a,s'). </math>
+:<math> Q^\pi(s, a) = \sum_{s'\in S} [R(s,a,s') + \gamma V^\pi(s')]T(s,a,s'). </math>
 Cette dernière relation montre que la fonction <math>V^{\pi}</math> vérifie une relation de récurrence appelée équation de Bellman:
-:<math> V^pi(s) = \sum_{s'\in S} [R(s,\pi(s),s') + \gamma V^\pi(s')]T(s,\pi(s),s'). </math>
+:<math> V^\pi(s) = \sum_{s'\in S} [R(s,\pi(s),s') + \gamma V^\pi(s')]T(s,\pi(s),s'). </math>
 
-### Résolution de l'équation de Bellman
+==== Résolution de l'équation de Bellman ====
 Une politique étant fixée, l'équation de Bellman peut résoudre d'au moins deux manières, permettant donc de déterminer les valeurs de <math>V^\pi</math>, et par suite, celles de <math>Q^\pi</math> également.
 * on peut déjà remarquer que, dans le cas où le nombre d'états <math>n</math> est fini, l'équation de Bellman cache en fait un système linéaire de <math>n</math> équations à <math>n</math> inconnues. 
 On peut donc le résoudre, une fois traduit en une équation matricielle, par une technique telle que le pivot de Gauss.
@@ -70,7 +69,7 @@ On peut donc le résoudre, une fois traduit en une équation matricielle, par un
 on définit un opérateur <math>K</math> pour lequel <math>V^\pi</math> est un point fixe.
 On peut montrer que <math>K</math> est une contraction, ce qui garantit d'une part l'existence d'un unique point fixe, et d'autre part que la suite récurrence <math>V_{n+1} = K(V_n)</math> converge vers ce point fixe exponentiellement vite.
 
-### Equations d'optimalité de Bellman
+==== Equations d'optimalité de Bellman ====
 Le but de l'agent est de trouver la politique optimale <math>\pi^*</math> qui lui permet de maximiser son gain, c'est-à-dire celle qui vérifie, pour tout état <math>s\in S</math>, <math>V^{\pi^*}(s)\geq V^{\pi}(s)</math> quelle que soit l'autre politique <math>\pi</math>.
 On peut montrer que la fonction de valeurs optimale <math>V^*</math> vérifie l'équation d'optimalité de Bellman:
 :<math>V^*(s) = \max_{a\in A}\sum_{s'\in S} [R(s,\pi(s),s') + \gamma V^*(s')]T(s,a,s').</math>
@@ -78,27 +77,27 @@ On peut montrer que la fonction de valeurs optimale <math>V^*</math> vérifie l'
 De manière analogue, la fonction <math>Q</math> vérifie elle aussi une équation d'optimalité:
 :<math>Q^*(s,a) = \sum_{s'\in S} [R(s,a,s') + \gamma \max_{a'\in A} Q^*(s',a')]T(s,a,s').</math>
 
-#### Résolution des équations d'optimalité de Bellman
+===== Résolution des équations d'optimalité de Bellman =====
 Les équations d'optimalité de Bellman ne sont pas linéaires, il faut donc abandonner l'idée de les résoudre algébriquement.
 En revanche, l'opérateur <math>K</math> défini par
 :<math>K(f)(s) = \max_{a\in A}\sum_{s'\in S} [R(s,a,s') + \gamma f(s)]T(s,a,s'),</math>
 définit encore une contraction dont <math>V^*</math> est un point fixe.
 La fonction de valeurs optimale peut donc à nouveau s'approcher par un processus itératif à convergence exponentielle.
 
-#### Algorithmes de détermination de la politique optimale.
+===== Algorithmes de détermination de la politique optimale =====
 
-##### Itération sur la valeur (VI)
-La méthode itérative que nous venons de voir pour les équations d'optimalité de Bellman fournit un premier algorithme, appelé *itération sur la valeur* (VI: Value-Iteration) permettant de déterminer <math>\pi^*</math>.
+====== Itération sur la valeur (VI) ======
+La méthode itérative que nous venons de voir pour les équations d'optimalité de Bellman fournit un premier algorithme, appelé ''itération sur la valeur'' (VI: Value-Iteration) permettant de déterminer <math>\pi^*</math>.
 Il suffit en effet de déterminer <math>V^*</math> avec une précision donnée, et on peut en déduire la politique optimale par:
 :<math>\pi(s) 
-= \argmax_{a\in A} Q^*(s,a)  
-= \argmax_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^*(s')]T(s,a,s').</math>
+= \arg\max_{a\in A} Q^*(s,a)  
+= \arg\max_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^*(s')]T(s,a,s').</math>
 Une difficulté dans cet algorithme est de déterminer la précision avec laquelle calculer <math>V^*</math> de manière à être sûr d'en déduire effectivement la politique optimale.
 
-##### Itération sur la politique (PI)
+====== Itération sur la politique (PI) ======
 Un autre algorithme, appelé *itération de la politique* (PI: Policy-Iteration) essaye d'obtenir la politique optimale sans nécessairement calculer "jusqu'au bout" les valeurs de <math>V^*</math>.
 L'idée est de partir d'une politique quelconque <math>\pi_0</math>, puis d'alterner une phase d'évaluation, dans laquelle la fonction <math>V^{\pi_n}</math> est déterminée (avec une des techniques vues plus haut), avec une phase d'amélioriation, où l'on définit la politique suivante <math>\pi_{n+1}</math> par:
-:<math>\pi_{n+1}(s) = \argmax_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^{\pi_n}(s')]T(s,a,s').</math>.
+:<math>\pi_{n+1}(s) = \arg\max_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^{\pi_n}(s')]T(s,a,s').</math>.
 Cet algorithme prend fin lorsqu'aucune évolution de la politique n'est observée, ie, lorsque <math>\pi_{n+1}(s)=\pi_n(s)</math> pour tout <math>s</math>.
 
 Si dans l'algorithme précédent l'on utilise une méthode itérative pour évaluer <math>V^\pi</math>, alors se pose la question de savoir à quelle précision s'arrêter.
@@ -109,47 +108,48 @@ L'algorithme PI peut également se formuler dans les termes de la fonction d'ét
 On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant toutes autour d'un même principe général qui est schématisé à la figure ci-contre.
 [[Image:IMG/policy-iteration.svg|alt=policy-iteration|Schéma général des algorithmes d'itération sur la politique]]
 
-# Exemples (lucas)
+== Exemples (lucas) ==
 % présenter la modélisation sur deux trois exemples:
 % dire quels états, quelles actions...
 
-# Les techniques batch
+== Les techniques batch ==
 
-## généralités (leo)
+=== généralités (leo) ===
 % principe experience replay
 % principe fitting
 
-##les algos principaux
+=== les algos principaux ===
 % à chaque fois, expliquer le principe, donner un pseudo-code grossier
 % pointer article(s) qui l'utilisent... le plus le mieux
 % si possible: pointer au max notre classification
-###kernel based (leo)
-###fitted Q iteration (lucas)
+==== kernel based (leo) ====
+==== fitted Q iteration (lucas) ====
 
-###Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) 
-####Description de l'algorithme
+==== Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) ====
+===== Description de l'algorithme =====
 Cet algorithme est une adaptation de l'algorithme d'itération de la politique exprimé sur la fonction $Q$ d'états-actions.
 Il se focalise exclusivement sur l'évaluation de $Q$, et la politique n'y est jamais représentée explicitement, mais simplement déduite à la volée, par le choix glouton classique:
-:<math>\pi(s)=\argmax_{a\in A}Q(s,a)</math>
+:<math>\pi(s)=\arg\max_{a\in A}Q(s,a)</math>
 
 Par rapport à PI, LSPI opère deux grandes généralisations:
+
 1. la fonction $Q$ est exprimée comme une combinaison linéaire de fonctions $\phi_i$, $i=1,\dots,k$:
 $$Q(s,a) = \sum_{i=1}^k w_i\phi_i(s,a).$$
-Les fonctions $\phi_i$ forment donc une base d'un sous-espace {\cal Q} de l'espace des fonctions états-actions, choisie une fois pour toutes au départ.
+Les fonctions $\phi_i$ forment donc une base d'un sous-espace \mathcal{Q} de l'espace des fonctions états-actions, choisie une fois pour toutes au départ.
 Ainsi en interne, la fonction $Q$ est simplement représentée par les $k$ coefficients $w_i$.
 
 Ce modèle possède un avantage: quels que soient le nombre d'états et d'actions, seuls $k$ coefficients sont utilisés pour représenter l'ensemble des valeurs de $Q$, contre $|S|\times |A|$ si l'on utilisait une représentation tabulaire classique.
 Ceci permet de traiter efficacement des MDP possédant un grand nombre d'états et/ou d'actions.
 On peut même, dans ce formalisme, considérer des espaces d'états ou d'actions continus.
 
-L'inconvénient, en revanche, est que l'on est maintenant restreint aux fonctions de $\cal Q$.
+L'inconvénient, en revanche, est que l'on est maintenant restreint aux fonctions de $\mathcal{Q}$.
 Dans l'algorithme PI avec états-valeurs, la phase d'évaluation de la politique $\pi$ consiste à déterminer le point fixe $Q^\pi$ de l'opérateur
 :<math> K(Q)(s, a) = \sum_{s'\in S} [R(s,a,s') + \gamma Q(s', \pi(s'))]T(s,a,s'),</math>
 soit par la résolution d'un système linéaire, soit par calcul itératif sur $K$.
 
-Or même si par définition $Q\in {\cal Q}$, on n'a pas en général $K(Q)\in{\cal Q}$. 
+Or même si par définition $Q\in \mathcal{Q}$, on n'a pas en général $K(Q)\in\mathcal{Q}$. 
 L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour $K(Q)$ sur $\cal Q$:
-:<math>K'(Q) = {\cal P}^\perp_{\cal Q}(K(Q),</math>
+:<math>K'(Q) = \mathcal{P}^\perp_\mathcal{Q}(K(Q)),</math>
 et donc d'obtenir une approximation $\hat Q^\pi$ de $Q^\pi$ qui est stable par la règle de mise à jour suivie de la projection.
 Dans [ref], ce point fixe est obtenu par résolution d'un système linéaire.
 
@@ -163,7 +163,7 @@ On peut également remarquer que chaque échantillon contribue linéairement à 
 La figure ci-contre résume schématiquement l'algorithme LSPI.
 [[Image:IMG/LS-policy-iteration.svg|alt=least-squares policy-iteration|L'algorithme d'itération moindres carrés sur la politique]]
 
-####Applications
+===== Applications =====
 TODO: parler des applications de l'article, en trouver d'autres.
 
-###monte-carlo ??
+==== monte-carlo ?? ====
