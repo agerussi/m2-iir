@@ -15,7 +15,7 @@
 % IE=oui QE=partielle semi-batch
 
 == Le modèle général (alexandre) ==
-TODO: mettre les liens wiki et références biblio
+TODO: mettre références WIKI
 
 === Processus de décision de Markov ===
 Les ''processus de décision de Markov'' (Markov Decision Processes (MDP) en anglais) forment le modèle sous-jacent à tout algorithme d'apprentissage par renforcement, qu'il soit en ligne ou hors ligne.
@@ -32,12 +32,13 @@ Dans ce modèle, l'environnement d'apprentissage est modélisé par:
  
 NB: nous ne considérons ici que les modèles dans lesquels le temps est discrétisé, c'est-à-dire que la «trajectoire» d'un apprenant dans l'environnement est décrivable par ''une suite'' d'états <math>s_t</math> (<math>t\in\N</math>), et non par ''une fonction'' <math>s(t)</math> avec <math>t\in\R</math>.
 De même on notera <math>a_t</math> la suite des actions prises par l'agent.
-On pourra consulter [ref]() pour une description des MDP à temps continu.
+On pourra consulter 
+<ref name="CTMDP">{{en}} Xianping Guo, Onesimo Hernandez-Lerma, ''Continuous-Time Markov Decision Processes: Theory and Applications'', Springer-Verlag Berlin Heidelberg, 2009, {{ISBN|978-3-642-02546-4}}</ref>
+pour une description des MDP à temps continu.
 
 === Politiques, fonctions de valeur et équations de Bellman ===
 La politique d'un agent est la manière avec laquelle il choisit l'action qu'il va effectuer lorsqu'il se trouve dans un état donné.
 Formellement il s'agit donc d'une fonction <math>\pi: S\to A</math> dans le cas d'une politique déterministe (ce que nous supposerons dans la suite), ou <math>\pi:S\times A\to[0;1]</math> dans le cas stochastique: on a donc <math>a_t=\pi(s_t)</math>.
-Il est possible de généraliser la notion de politique en la faisant dépendre non uniquement de l'état présent, mais de l'ensemble de la trajectoire passée de l'agent dans l'environnement, et donc en particulier du temps qui passe [ref à trouver]().
 
 Afin que l'agent puisse choisir une politique, il faut lui fournir un critère de choix.
 Ce critère est lié à la fonction de récompense <math>R</math>. 
@@ -148,10 +149,12 @@ Dans l'algorithme PI avec états-valeurs, la phase d'évaluation de la politique
 soit par la résolution d'un système linéaire, soit par calcul itératif sur <math>K</math>.
 
 Or même si par définition <math>Q\in \mathcal{Q}</math>, on n'a pas en général <math>K(Q)\in\mathcal{Q}</math>. 
-L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour <math>K(Q)</math> sur <math>\cal Q</math>:
+L'idée dans LSPI est alors de projeter (au sens des moindres carrés, d'où le nom de l'algorithme) la mise à jour <math>K(Q)</math> sur <math>\mathcal{Q}</math>:
 :<math>K'(Q) = \mathcal{P}^\perp_\mathcal{Q}(K(Q)),</math>
 et donc d'obtenir une approximation <math>\hat Q^\pi</math> de <math>Q^\pi</math> qui est stable par la règle de mise à jour suivie de la projection.
-Dans [ref], ce point fixe est obtenu par résolution d'un système linéaire.
+Dans 
+<ref name="LSPI">{{en}} Michail Lagoudakis, Ronald Parr, «Least-Squares Policy Iteration», Journal of Machine Learning Research 4, 2003, p. 1107-1149</ref>
+ce point fixe est obtenu par résolution d'un système linéaire.
 
 2. La deuxième différence est que LSPI ne suppose pas le MDP connu; l'algorithme se base uniquement sur un jeu d'échantillons du MDP, donnés sous la forme de quadruplets <math>(s,a,r,s')</math>.
 Ces échantillons peuvent être donnés directement au départ de l'algorithme (pure batch) ou progressivement (semi-batch ou en-ligne).
@@ -163,7 +166,19 @@ On peut également remarquer que chaque échantillon contribue linéairement à 
 La figure ci-contre résume schématiquement l'algorithme LSPI.
 [[Image:IMG/LS-policy-iteration.svg|alt=least-squares policy-iteration|L'algorithme d'itération moindres carrés sur la politique]]
 
-===== Applications =====
-TODO: parler des applications de l'article, en trouver d'autres.
+===== Exemple d'application =====
 
-==== monte-carlo ?? ====
+Dans <ref name="LSPI"/>, plusieurs applications de l'algorithme LSPI sont proposées.
+L'une d'elles, dans lequel l'algorithme est particulièrement performant notamment par rapport à un algorithme de [[Q-Learning]], est le problème de l'''équilibre et la conduite d'un vélo''
+<ref name="">{{en}} Jette Randløv and Preben Alstrøm, «Learning to Drive a Bicycle Using Reinforcement Learning and Shaping», dans Proceedings of the Fifteenth International Conference on Machine Learning (ICML '98), 1998, Jude W. Shavlik (Ed.). Morgan Kaufmann Publishers Inc., San Francisco, CA, USA, 463-471.</ref>.
+
+Dans ce problème l'apprenant connaît à chaque pas de temps l'angle et la vitesse angulaire du guidon, ainsi que l'angle, la vitesse et accélération angulaire de l'angle que forme le vélo avec la verticale.
+Il doit alors agir quelle force rotatoire appliquer au guidon (choisie parmi trois possibilités), ainsi que le déplacement de son centre de masse par rapport au plan du vélo (choisie également parmi 3 possibilités), de manière d'une part à rester en équilibre (c'est-à-dire ici ne pas dépasser un angle vélo/sol de +/- 12°) et d'autre part atteindre une destination cible.
+
+La mise en oeuvre est pûrement hors-ligne et consiste à observer le comportement d'un agent aléatoire pour collecter de l'ordre de quelques dizaines de milliers d'échantillons sous forme de trajectoires.
+Les trajectoires collectées sont ensuite coupées après quelques pas de temps, pour ne garder que la partie intéressante avant qu'elles ne rentrent dans un scénario de chute inexorable. 
+Les récompenses sont en lien avec la distance atteinte par rapport à l'objectif.
+Quelques passes de l'algorithme sont ensuite effectuées sur ces échantillons («experience replay») et une convergence très rapide vers des stratégies viables est observée.
+
+== Références ==
+<!-- ne rien écrire ici, la mise en forme est automatique à partir des <ref> du document -->
