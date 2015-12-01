@@ -1,12 +1,14 @@
 % la page web au format texte+formules en syntaxe latex
 
-== Introduction (lucas) ==
-% qu'est-ce que RL ?
-% distinction on-line/off-line
-% distinction model-based / model-free
+== Introduction ==
 
-% définir le pure-online, et donc le batch par opposition
+% TODO : politique ou stratégie?
+% distinction model-based / model-free
 % exemples où le batch est nécessaire
+
+L''''apprentissage par renforcement hors ligne''' est un cas particulier de l'[[Apprentissage par renforcement]], qui est une classe de problèmes d'[[Apprentissage automatique]] dont l'objectif est de déterminer à partir d'expériences une stratégie permettant à un agent de maximiser une récompense numérique.
+
+Dans le cadre de l'apprentissage par renforcement purement hors ligne, l'agent ne peut pas intéragir avec l'environnement pendant son apprentissage; il commence par explorer, puis il apprend une stratégie. Nous nous plaçons ici dans un cadre plus large, où l'agent peut alterner entre exploration et apprentissage, ce qui lui permet de bénéficier de l'efficacité des techniques d'apprentissage tout en explorant son environnement.
 
 == Classification des batchs (leo) ==
 % selon interaction ou pas (IE), la quantité d'expérience utilisée (QE)
@@ -109,9 +111,26 @@ L'algorithme PI peut également se formuler dans les termes de la fonction d'ét
 On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant toutes autour d'un même principe général qui est schématisé à la figure ci-contre.
 [[Image:IMG/policy-iteration.svg|alt=policy-iteration|Schéma général des algorithmes d'itération sur la politique]]
 
-== Exemples (lucas) ==
-% présenter la modélisation sur deux trois exemples:
-% dire quels états, quelles actions...
+== Exemples ==
+
+% TODO : trouver un exemple simple et discret?
+
+=== Car on the Hill ===
+
+% TODO : refaire la figure
+
+Dans ce problème, une voiture se déplace sur une colline, l'objectif est d'atteindre le haut de la colline (situé à la position <math>p = 1</math>) aussi vite que possible, en gardant une vitesse entre -3 et 3, et une position supérieure à -1.
+
+ * Les états sont décrits par la position de la voiture (<math>p \in \[-1, 1\]</math>) et sa vitesse (<math>s \in \[-3,3\]</math>);
+ * Les actions sont les accélérations possibles de la voiture : <math>a \in \{-4, 4\}</math>;
+ * La fonction de transition est obtenue en faisant la somme des forces qui s'applique à la voiture;
+ * La fonction de récompense vaut :
+ ** -1 si <math>p < 1</math> ou <math>s \in [-3, 3]</math>,
+ ** 1 si <math>p \geq 1</math> et <math>s \not\in [-3, 3]</math>,
+ ** 0 sinon.
+[[Image:IMG/car-on-the-hill.png|alt=car-on-the-hill|Représentation de <math>Hill(p)</math> (la forme de la colline) et des forces que subie la voiture.]]
+
+=== Pendule inversé? ===
 
 == Les techniques batch ==
 
@@ -124,7 +143,27 @@ On voit donc qu'un grand nombre de variantes peuvent être imaginées, tournant 
 % pointer article(s) qui l'utilisent... le plus le mieux
 % si possible: pointer au max notre classification
 ==== kernel based (leo) ====
-==== fitted Q iteration (lucas) ====
+
+==== Fitted Q iteration (FQI) ====
+
+===== Description de l'algorithme =====
+% TODO : Traduction "FQI"
+
+Cet algorithme permet de calculer une approximation de la fonction de valeurs optimale des états-actions <math>Q</math> à partir d'un jeu d'échantillons du MDP. Connaissant <math>Q</math>, il est alors possible de déduire la politique correspondante : <math>\pi(s)=\arg\max_{a\in A}Q(s,a)</math>. 
+
+Étant donné un jeu d'échantillons <math>\mathcal{F}</math> (un ensemble de transitions de la forme <math>(s,a,r,s')</math>) et une approximation initiale <math>\hat{Q}^0</math> (en général <math>\hat{Q}^0(s,a) = 0</math>), l'algorithme procède de la manière suivante :
+
+# Il crée une base de donnée d'apprentissage <math>P</math> constituée des couples entrée-sortie <math>(s,a) \to r+\gamma\max_{a' \in A}\hat{Q}^i(s,a)</math> pour chaque transition <math>(s,a,r,s') \in \mathcal{F}</math>.
+# Il déduit une fonction <math>\hat{Q}^{i+1}</math> à partir de l'ensemble <math>P</math> en utilisant une méthode d'apprentissage supervisé. Cette fonction est une approximation de la fonction <math>Q^{i+1}</math> obtenue à la <math>i+1</math><sup>ème</sup> itération de l'algorithme de programmation dynamique.
+# Il incrémente <math>i</math> et retourne à la première étape tant qu'une condition d'arrêt n'est pas vérifiée.
+
+Cet algorithme peut-être utilisé avec n'importe quelle méthode d'apprentissage supervisé, en particulier des méthodes non paramétriques, qui ne font aucune hypothèse sur la forme de <math>Q</math>. Il permet également de traiter des espace d'états et d'actions continus. Sa convergence n'a cependant été démontrée que pour une certaine classe de méthodes d'apprentissage. Différentes conditions d'arrêt peuvent-être utilisées; en pratique, fixer le nombre d'itérations permet d'assurer la terminaison de l'algorithme, et ce quelque soit la méthode d'apprentissage utilisée.
+
+Dans <ref name="FQI">{{en}} Damien Ernst, Pierre Geurts, Louis Wehenkel, «Tree-Based Batch Mode Reinforcement Learning», Journal of Machine Learning Research 6, 2005, p. 503–556</ref>, plusieurs problèmes ont été utilisés pour évaluer l'algorithme avec différentes méthodes d'apprentissage supervisé, et avec plusieurs types de batch (pure batch et growing batch). Sur ces problèmes, l'algorithme de fitted Q iteration est très performant, en particulier en utilisant des méthodes d'apprentissage non paramétriques (comme la [[méthode des k plus proches voisins]]).
+
+===== Exemple d'application =====
+
+% TODO : est-ce vraiment utile?
 
 ==== Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) ====
 ===== Description de l'algorithme =====
