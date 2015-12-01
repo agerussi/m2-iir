@@ -44,7 +44,7 @@ Cette dernière relation montre que la fonction <math>V^{\pi}</math> vérifie un
 :<math> V^\pi(s) = \sum_{s'\in S} [R(s,\pi(s),s') + \gamma V^\pi(s')]T(s,\pi(s),s'). </math>
 
 ==== Résolution de l'équation de Bellman ====
-Une politique étant fixée, l'équation de Bellman peut résoudre d'au moins deux manières, permettant donc de déterminer les valeurs de <math>V^\pi</math>, et par suite, celles de <math>Q^\pi</math> également.
+Une politique étant fixée, l'équation de Bellman peut se résoudre d'au moins deux manières, permettant donc de déterminer les valeurs de <math>V^\pi</math>, et par suite, celles de <math>Q^\pi</math> également.
 * on peut déjà remarquer que, dans le cas où le nombre d'états <math>n</math> est fini, l'équation de Bellman cache en fait un système linéaire de <math>n</math> équations à <math>n</math> inconnues. 
 On peut donc le résoudre, une fois traduit en une équation matricielle, par une technique telle que le pivot de Gauss.
 * on peut également remarquer qu'en posant
@@ -78,7 +78,7 @@ Il suffit en effet de déterminer <math>V^*</math> avec une précision donnée, 
 Une difficulté dans cet algorithme est de déterminer la précision avec laquelle calculer <math>V^*</math> de manière à être sûr d'en déduire effectivement la politique optimale.
 
 ====== Itération sur la politique (PI) ======
-Un autre algorithme, appelé *itération de la politique* (PI: Policy-Iteration) essaye d'obtenir la politique optimale sans nécessairement calculer "jusqu'au bout" les valeurs de <math>V^*</math>.
+Un autre algorithme, appelé ''itération de la politique'' (PI: Policy-Iteration) essaye d'obtenir la politique optimale sans nécessairement calculer "jusqu'au bout" les valeurs de <math>V^*</math>.
 L'idée est de partir d'une politique quelconque <math>\pi_0</math>, puis d'alterner une phase d'évaluation, dans laquelle la fonction <math>V^{\pi_n}</math> est déterminée (avec une des techniques vues plus haut), avec une phase d'amélioriation, où l'on définit la politique suivante <math>\pi_{n+1}</math> par:
 :<math>\pi_{n+1}(s) = \arg\max_{a\in A} \sum_{s'\in S} [R(s,a,s') + \gamma V^{\pi_n}(s')]T(s,a,s').</math>.
 Cet algorithme prend fin lorsqu'aucune évolution de la politique n'est observée, ie, lorsque <math>\pi_{n+1}(s)=\pi_n(s)</math> pour tout <math>s</math>.

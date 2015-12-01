@@ -16,8 +16,9 @@ Dans le cadre de l'apprentissage par renforcement purement hors ligne, l'agent n
 % IE=oui QE=tout growing batch
 % IE=oui QE=partielle semi-batch
 
-== Le modèle général (alexandre) ==
-TODO: faire le lien avec la page (enrichie) des mdp
+== Modèle théorique sous-jacent ==
+La modélisation classique de l'apprentissage par renforcement (en ligne ou hors ligne) utilise la notion de [[Processus_de_décision_markovien]]. 
+Nous en reprenons les notations dans ce qui suit. 
 
 == Exemples ==
 
@@ -75,7 +76,7 @@ Dans <ref name="FQI">{{en}} Damien Ernst, Pierre Geurts, Louis Wehenkel, «Tree-
 
 ==== Itération moindres carrés de la politique (LSPI: Least-Squares Policy Iteration) (alex) ====
 ===== Description de l'algorithme =====
-Cet algorithme est une adaptation de l'algorithme d'itération de la politique exprimé sur la fonction <math>Q</math> d'états-actions.
+Cet algorithme est une adaptation de l'algorithme d'[[Processus_de_décision_markovien#Déterminer la politique optimale: algorithme d'Itération sur la politique (PI)|itération de la politique]] exprimé sur la fonction <math>Q</math> d'états-actions.
 Il se focalise exclusivement sur l'évaluation de <math>Q</math>, et la politique n'y est jamais représentée explicitement, mais simplement déduite à la volée, par le choix glouton classique:
 :<math>\pi(s)=\arg\max_{a\in A}Q(s,a)</math>
 
