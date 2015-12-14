@@ -68,9 +68,19 @@
 
 \section{Fitted Q-iteration} % LUCAS
 \frame{
-\frametitle{Fitted Q-iteration}
+  \frametitle{Fitted Q-iteration}
+  \begin{block}{Itération sur la valeur}
+\[
+Q^{i+1}(s,a) = \sum_{s'\in S} \mathcal{T}_{ss'}^a(\mathcal{R}_{ss'}^a + \gamma \max_{a'\in A} Q^i(s',a'))
+\]
+\end{block}
 \begin{itemize}
-\item ??
+\item $\mathcal{F}$ ensemble de transitions $(s,a,r,s')$
+\item Base de donnée d'apprentissage $P$ :
+  \[
+  (s,a) \to r+\gamma\max_{a' \in A}\hat{Q}^i(s',a')
+  \]
+  \item Apprentissage supervisé $\to \hat{Q}^{i+1}$
 \end{itemize}
 }
 
