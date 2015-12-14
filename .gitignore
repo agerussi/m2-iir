@@ -1,0 +1,7 @@
+SLIDES/*.aux
+SLIDES/*.log
+SLIDES/*.nav
+SLIDES/*.out
+SLIDES/*.snm
+SLIDES/*.toc
+
