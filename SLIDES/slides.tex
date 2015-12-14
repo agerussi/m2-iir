@@ -52,9 +52,11 @@
 \frame{
 \frametitle{Principes généraux}
 \begin{itemize}
-\item utilisation maximale de l'expérience déjà acquise
-\item experience replay: faire converger sans explorer
-\item fitting: accélérer et stabiliser la propagation en globalisant les mises à jour
+\item nombreux algorithmes, différant essentiellement sur des détails
+\item itérations dans SARSA ou Q-learning: exploration + convergence
+\item $\Rightarrow$ {\bf experience replay}: faire converger sans explorer
+\item itérations en-ligne: locales, propagation aléatoire par les itérations
+\item $\Rightarrow $ {\bf fitting}: accélérer et stabiliser la propagation en globalisant les MAJ
 \end{itemize}
 }
 
@@ -87,14 +89,14 @@ Q^{i+1}(s,a) = \sum_{s'\in S} \mathcal{T}_{ss'}^a(\mathcal{R}_{ss'}^a + \gamma \
 \section{Least-Squares Policy Iteration} % ALEXANDRE
 \frame{
 \frametitle{Least-Squares Policy Iteration}
-$$K'(Q) = \mathcal{P}_{\mathcal{Q}}^\perp(K(Q))$$
+$$Q=K(Q) \longleftrightarrow Q= K'(Q) = \mathcal{P}_{\mathcal{Q}}^\perp(K(Q))$$
 \begin{centering}
 \includegraphics<1>[width=7cm]{../IMG/LS-policy-iteration.pdf}%
 \end{centering}
 }
 
 \frame{
-\frametitle{Équilibre et conduite d'un vélo}
+    \frametitle{Application: équilibre et conduite d'un vélo}
 \begin{itemize}
 \item rester debout et atteindre un but en vélo
 \item valeurs sous contrôle:  
@@ -102,8 +104,7 @@ $$K'(Q) = \mathcal{P}_{\mathcal{Q}}^\perp(K(Q))$$
 \item force rotatoire à appliquer au guidon
 \item placement du centre de masse par rapport au vélo
 \end{itemize}
-\item pure hors-ligne
-\item dizaine de milliers de trajectoires effectuées aléatoirement
+\item pûrement hors-ligne à partir de quelques milliers de trajectoires effectuées aléatoirement
 \item experience replay: quelques passes de l'ensemble des données font converger
 \end{itemize}
 }
