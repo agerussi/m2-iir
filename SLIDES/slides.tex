@@ -63,9 +63,33 @@
 \section{Kernel Based Approximate Dynamic Programming} % LEO
 \frame{
 \frametitle{Kernel Based Approximate Dynamic Programming}
+\begin{block}{Phase 1}
+\[
+\hat{Q}_a^{i+1}(\sigma) = \sum_{(s,a,r,s') \in F_a} k(s,\sigma) [r + \gamma \hat{V}^i(s')]
+\]
+\end{block}
+\begin{block}{Phase 2}
+\[
+\hat{V}^{i+1}(s) = \max_{a \in A} \hat{Q}_a^{i+1}(s)
+\]
+\end{block}
 \begin{itemize}
-\item  ??
+	\item $F_a$ etant l'ensemble des transitions effectue via $a$
+	\item $k$ defini une distance (weighted kernel) entre 2 etats
 \end{itemize}
+}
+
+\frame{
+    \frametitle{Application: Choix du portfolio optimal}
+\begin{itemize}
+	\item $s_t$ : valeur de l'action a un instant $t$
+	\item $a_t$ : action d'investissement
+\end{itemize}
+\begin{block}{Maximisation}
+\[
+	W_{t+1} = (1 + a_t \frac{s_{t+1} - s_t}{s_t})W_t
+\]
+\end{block}
 }
 
 \section{Fitted Q-iteration} % LUCAS
